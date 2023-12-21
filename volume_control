@@ -14,45 +14,45 @@ void setup() {
   
 }
 
-double wykrywanie(){
-  double dystans, czas;
+double detecting(){
+  double distance, time;
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
     digitalWrite(trigPin, HIGH);
     delayMicroseconds(10);
     digitalWrite(trigPin, LOW);
  
-    czas = pulseIn(echoPin, HIGH);
-    dystans = czas /58;
-    Serial.print(dystans);
+    time = pulseIn(echoPin, HIGH);
+    distance = time /58;
+    Serial.print(distance);
     Serial.print("  :         "); 
-    return dystans; 
+    return distance; 
 }
 
 void loop() {
   double temp;
-  double dystans = wykrywanie();
-  if(dystans < 40 && dystans > 15 ){
+  double distance = detecting();
+  if(distance < 40 && distance > 15 ){
     digitalWrite(buzzPin, HIGH);
     delay(20);
     digitalWrite(buzzPin, LOW);
     delay(400);
-    if((dystans - wykrywanie()) < 0){
+    if((distance - detecting()) < 0){
       do{
       Consumer.write(MEDIA_VOL_UP);
       delay(300);
-      temp = wykrywanie();
+      temp = detecting();
       }
-      while ((dystans - temp) < 0 && temp < 50);
+      while ((distance - temp) < 0 && temp < 50);
       
     }
-    else if ((dystans - wykrywanie()) > 0) {
+    else if ((distance - detecting()) > 0) {
       do{
       Consumer.write(MEDIA_VOL_DOWN);
       delay(300);
-      temp = wykrywanie();
+      temp = detecting();
       }
-      while ((dystans - temp) > 0 && temp > 15);
+      while ((distance - temp) > 0 && temp > 15);
       
     }
   }
