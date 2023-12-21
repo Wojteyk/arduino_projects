@@ -1,0 +1,63 @@
+#define trigPin 9
+#define echoPin 10
+#define buzzPin 11 
+#include <HID-Project.h>
+
+
+
+void setup() {
+  Consumer.begin();
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(buzzPin, OUTPUT);
+  
+}
+
+double wykrywanie(){
+  double dystans, czas;
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+ 
+    czas = pulseIn(echoPin, HIGH);
+    dystans = czas /58;
+    Serial.print(dystans);
+    Serial.print("  :         "); 
+    return dystans; 
+}
+
+void loop() {
+  double temp;
+  double dystans = wykrywanie();
+  if(dystans < 40 && dystans > 15 ){
+    digitalWrite(buzzPin, HIGH);
+    delay(20);
+    digitalWrite(buzzPin, LOW);
+    delay(400);
+    if((dystans - wykrywanie()) < 0){
+      do{
+      Consumer.write(MEDIA_VOL_UP);
+      delay(300);
+      temp = wykrywanie();
+      }
+      while ((dystans - temp) < 0 && temp < 50);
+      
+    }
+    else if ((dystans - wykrywanie()) > 0) {
+      do{
+      Consumer.write(MEDIA_VOL_DOWN);
+      delay(300);
+      temp = wykrywanie();
+      }
+      while ((dystans - temp) > 0 && temp > 15);
+      
+    }
+  }
+
+  delay(1000);
+ 
+
+}
